@@ -1,0 +1,34 @@
+<resources>
+    <string name="app_name">BandAFinal</string>
+    <string name="facebook_application_id">715146382318761</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="select_a_picture_for_your_profile">Select a picture for your profile</string>
+    <string name="uploading_image">Uploading Image...</string>
+    <string name="deleted_image_succesfully">Deleted image succesfully</string>
+    <string name="deleted_image_failed">Deleted image failed</string>
+    <string name="finished">Finished</string>
+    <string name="authentication_failed">Authentication Failed</string>
+    <string name="enter_your_name">Enter your name</string>
+    <string name="enter_your_email">Enter your email</string>
+    <string name="enter_your_password">Enter your password</string>
+    <string name="register">Register</string>
+    <string name="or_click_here_to_login">Or click here to login</string>
+    <string name="registering_please_wait">Registering, please wait...</string>
+    <string name="error_registering_user">Error registering user</string>
+    <string name="you_have_an_error">You have an error</string>
+    <string name="login_failed">Login failed</string>
+    <string name="enter_email_address">Enter email address</string>
+    <string name="password">Enter password</string>
+    <string name="login">Login</string>
+    <string name="not_registered">Not registered?</string>
+    <string name="forgot">Forgot password?</string>
+    <string name="you_are_logged_in">You are logged in</string>
+    <string name="please_login">Please login</string>
+    <string name="prompt_password">Prompt password</string>
+    <string name="fields_are_empty">Fields are empty</string>
+    <string name="error_occurred">Error occurred</string>
+    <string name="sign_up_now">Sign Up Now</string>
+    <string name="already_registered">Already registered?</string>
+    <string name="please_enter_a_valid_email">Please enter e valid email</string>
+    <string name="minimum_length_of_password_should_be_6">Minimum length of password should be 6</string>
+</resources>
