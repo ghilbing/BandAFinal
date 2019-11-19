@@ -10,6 +10,7 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,9 +32,11 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 import com.hilbing.bandafinal.MainActivity;
 import com.hilbing.bandafinal.ProfileActivity;
 import com.hilbing.bandafinal.R;
+import com.hilbing.bandafinal.models.Musician;
 
 import java.util.Arrays;
 
@@ -54,10 +57,13 @@ public class SignUpActivity extends AppCompatActivity {
     LoginButton facebookBT;
     @BindView(R.id.login_google_BT)
     SignInButton googleBT;
+    @BindView(R.id.progress_bar)
+    ProgressBar progressBar;
 
 
     FirebaseAuth mFirebaseAuth;
     FirebaseUser mUser;
+    FirebaseDatabase mDatabaseMusicians;
 
     CallbackManager callbackManager;
 
@@ -71,22 +77,25 @@ public class SignUpActivity extends AppCompatActivity {
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         mUser = mFirebaseAuth.getCurrentUser();
+        mDatabaseMusicians = FirebaseDatabase.getInstance();
 
 
 
         signUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String email = emailET.getText().toString();
-                String passw = passwordET.getText().toString();
+                final String email = emailET.getText().toString().trim();
+                String passw = passwordET.getText().toString().trim();
                 if (email.isEmpty()) {
                     emailET.setError(getResources().getString(R.string.enter_email_address));
                     emailET.requestFocus();
+                    return;
 
                 }
                 if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
                     emailET.setError(getResources().getString(R.string.please_enter_a_valid_email));
                     emailET.requestFocus();
+                    return;
                 }
 
                 if (passw.length() < 6){
@@ -98,21 +107,28 @@ public class SignUpActivity extends AppCompatActivity {
                 else if (passw.isEmpty()) {
                     passwordET.setError(getResources().getString(R.string.prompt_password));
                     passwordET.requestFocus();
+                    return;
                 }
 
                 else if (email.isEmpty() && passw.isEmpty()) {
                     Toast.makeText(SignUpActivity.this, getResources().getString(R.string.fields_are_empty), Toast.LENGTH_LONG).show();
                 }
                 else if (!(email.isEmpty() && passw.isEmpty())) {
+
+                    progressBar.setVisibility(View.VISIBLE);
+
                     mFirebaseAuth.createUserWithEmailAndPassword(email, passw).addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
+
                             if (!task.isSuccessful()) {
                                 FirebaseAuthException e = (FirebaseAuthException)task.getException();
                                 Toast.makeText(SignUpActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                                progressBar.setVisibility(View.GONE);
 
                             }
                             else {
+                                progressBar.setVisibility(View.GONE);
                                 startActivity(new Intent(SignUpActivity.this, ProfileActivity.class));
                             }
                         }

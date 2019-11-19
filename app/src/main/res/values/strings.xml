@@ -31,4 +31,7 @@
     <string name="already_registered">Already registered?</string>
     <string name="please_enter_a_valid_email">Please enter e valid email</string>
     <string name="minimum_length_of_password_should_be_6">Minimum length of password should be 6</string>
+    <string name="enter_your_phone">Enter your phone</string>
+    <string name="musician_added">Musician added</string>
+    <string name="profile_updated">profile_updated</string>
 </resources>
