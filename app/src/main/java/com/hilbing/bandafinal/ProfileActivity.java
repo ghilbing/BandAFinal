@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.graphics.Bitmap;
@@ -19,6 +20,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.internal.Storage;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -31,7 +33,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.hilbing.bandafinal.activities.auth.LoginEmailPassActivity;
 import com.hilbing.bandafinal.models.Musician;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 
@@ -70,6 +74,10 @@ public class ProfileActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
+        loadUserData();
+
+
+
         photoIV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -81,9 +89,28 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 saveUserInformation();
+                //loadUserData();
             }
         });
 
+    }
+
+    private void loadUserData() {
+
+        FirebaseUser user = mAuth.getCurrentUser();
+
+        if(user != null) {
+            if (user.getPhotoUrl().toString() != null) {
+                Picasso.get().load(user.getPhotoUrl().toString()).into(photoIV);
+            } else {
+                photoIV.requestFocus();
+            }
+            if (user.getDisplayName() != null) {
+                nameET.setText(user.getDisplayName());
+            } else {
+                nameET.requestFocus();
+            }
+        }
     }
 
     private void saveUserInformation() {
@@ -159,12 +186,23 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(mAuth.getCurrentUser() == null){
+            finish();
+            startActivity(new Intent(getApplicationContext(), LoginEmailPassActivity.class));
+        }
+    }
+
     private void uploadImageToFirebaseStorage() {
 
-        final StorageReference profileImagesReference = FirebaseStorage.getInstance().getReference("profileimages/" + System.currentTimeMillis() + ".jpg");
+        final FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+        final StorageReference storageReferenceProfilePic = firebaseStorage.getReference();
+        final StorageReference imageRef = storageReferenceProfilePic.child("profileimages/" + System.currentTimeMillis() + ".jpg");
         if(uriProfileImage != null){
             progressBar.setVisibility(View.VISIBLE);
-            profileImagesReference.putFile(uriProfileImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            imageRef.putFile(uriProfileImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     progressBar.setVisibility(View.GONE);
@@ -176,7 +214,6 @@ public class ProfileActivity extends AppCompatActivity {
 
                         }
                     });
-
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -186,6 +223,5 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             });
         }
-
     }
 }

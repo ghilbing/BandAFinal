@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,6 +25,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.hilbing.bandafinal.ProfileActivity;
 import com.hilbing.bandafinal.R;
 
 import butterknife.BindView;
@@ -80,7 +82,7 @@ public class FacebookLoginActivity extends AppCompatActivity {
                 if (user != null){
                     Log.d("", "onAuthStateChanged:singed_in: "+ user.getUid());
 
-                    Intent intent = new Intent(FacebookLoginActivity.this, FacebookUserActivity.class);
+                    Intent intent = new Intent(FacebookLoginActivity.this, ProfileActivity.class);
                     String email = user.getEmail();
                     String name = user.getDisplayName();
                     startActivity(intent);

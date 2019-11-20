@@ -3,6 +3,7 @@ package com.hilbing.bandafinal.activities.auth;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -17,6 +18,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.hilbing.bandafinal.MainActivity;
+import com.hilbing.bandafinal.ProfileActivity;
 import com.hilbing.bandafinal.R;
 
 import butterknife.BindView;
@@ -35,7 +37,7 @@ public class LoginEmailPassActivity extends AppCompatActivity {
     @BindView(R.id.forgot_login_TV)
     TextView forgotTV;
 
-    FirebaseAuth mFirebaseAuth;
+    FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
 
     @Override
@@ -45,13 +47,13 @@ public class LoginEmailPassActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        mFirebaseAuth = FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance();
 
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
 
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser mFirebaseUser = mFirebaseAuth.getCurrentUser();
+                FirebaseUser mFirebaseUser = mAuth.getCurrentUser();
                 if(mFirebaseUser != null){
                     Toast.makeText(LoginEmailPassActivity.this, getResources().getString(R.string.you_are_logged_in) + firebaseAuth.getCurrentUser().getUid(), Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(LoginEmailPassActivity.this, MainActivity.class);
@@ -81,15 +83,16 @@ public class LoginEmailPassActivity extends AppCompatActivity {
                     Toast.makeText(LoginEmailPassActivity.this, getResources().getString(R.string.fields_are_empty), Toast.LENGTH_LONG).show();
                 }
                 else if (!(email.isEmpty() && passw.isEmpty())) {
-                    mFirebaseAuth.signInWithEmailAndPassword(email, passw).addOnCompleteListener(LoginEmailPassActivity.this, new OnCompleteListener<AuthResult>() {
+                    mAuth.signInWithEmailAndPassword(email, passw).addOnCompleteListener(LoginEmailPassActivity.this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (!task.isSuccessful()){
                                 Toast.makeText(LoginEmailPassActivity.this, getResources().getString(R.string.login_failed), Toast.LENGTH_LONG).show();
                             }
                             else {
-                                Intent intToHome = new Intent(LoginEmailPassActivity.this, MainActivity.class);
-                                startActivity(intToHome);
+                                finish();
+                                Intent intent = new Intent(LoginEmailPassActivity.this, ProfileActivity.class);
+                                startActivity(intent);
                             }
                         }
                     });
@@ -122,6 +125,11 @@ public class LoginEmailPassActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
+        if(mAuth.getCurrentUser() != null){
+            finish();
+            startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+        }
         // mFirebaseAuth.addAuthStateListener(mAuthStateListener);
     }
 

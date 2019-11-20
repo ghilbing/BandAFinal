@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
@@ -61,7 +62,7 @@ public class SignUpActivity extends AppCompatActivity {
     ProgressBar progressBar;
 
 
-    FirebaseAuth mFirebaseAuth;
+    FirebaseAuth mAuth;
     FirebaseUser mUser;
     FirebaseDatabase mDatabaseMusicians;
 
@@ -75,11 +76,9 @@ public class SignUpActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        mFirebaseAuth = FirebaseAuth.getInstance();
-        mUser = mFirebaseAuth.getCurrentUser();
+        mAuth = FirebaseAuth.getInstance();
+        mUser = mAuth.getCurrentUser();
         mDatabaseMusicians = FirebaseDatabase.getInstance();
-
-
 
         signUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,7 +116,7 @@ public class SignUpActivity extends AppCompatActivity {
 
                     progressBar.setVisibility(View.VISIBLE);
 
-                    mFirebaseAuth.createUserWithEmailAndPassword(email, passw).addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
+                    mAuth.createUserWithEmailAndPassword(email, passw).addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
 
@@ -129,7 +128,10 @@ public class SignUpActivity extends AppCompatActivity {
                             }
                             else {
                                 progressBar.setVisibility(View.GONE);
-                                startActivity(new Intent(SignUpActivity.this, ProfileActivity.class));
+                                finish();
+                                Intent intent = new Intent(SignUpActivity.this, ProfileActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
                             }
                         }
                     });
@@ -159,6 +161,7 @@ public class SignUpActivity extends AppCompatActivity {
         haveAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                finish();
                 Intent intent = new Intent(SignUpActivity.this, LoginEmailPassActivity.class);
                 startActivity(intent);
             }
@@ -166,6 +169,14 @@ public class SignUpActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(mAuth.getCurrentUser() != null){
+            finish();
+            startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+        }
+    }
 
 
     @Override
