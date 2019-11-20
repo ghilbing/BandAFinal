@@ -11,18 +11,22 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.hilbing.bandafinal.ProfileActivity;
 import com.hilbing.bandafinal.R;
 
 import butterknife.BindView;
@@ -46,7 +50,8 @@ public class GoogleLoginActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getResources().getString(R.string.google_api_key))
+               // .requestIdToken(getResources().getString(R.string.google_api_key))
+                .requestIdToken(getResources().getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
 
@@ -83,8 +88,30 @@ public class GoogleLoginActivity extends AppCompatActivity {
                 firebaseAuthWithGoogle(account);
             } else {
                 Toast.makeText(this, getResources().getString(R.string.login_failed), Toast.LENGTH_LONG).show();
+                Toast.makeText(this, getResources().getString(R.string.login_failed), Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+/*    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == CODE_GOOGLE_LOGIN){
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try{
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                firebaseAuthWithGoogle(account);
+            }catch (ApiException e){
+                Log.w("", "Google sign in failed");
+            }
+        }
+    }*/
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
@@ -100,6 +127,8 @@ public class GoogleLoginActivity extends AppCompatActivity {
                         if(!task.isSuccessful()){
                             Log.w("", "signInWithCredential", task.getException());
                             Toast.makeText(GoogleLoginActivity.this, getResources().getString(R.string.authentication_failed), Toast.LENGTH_LONG).show();
+                        } else {
+                            startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
                         }
                     }
                 });

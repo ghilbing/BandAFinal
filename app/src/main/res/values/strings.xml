@@ -34,4 +34,9 @@
     <string name="enter_your_phone">Enter your phone</string>
     <string name="musician_added">Musician added</string>
     <string name="profile_updated">profile_updated</string>
+    <string name="verified">Verified</string>
+    <string name="email_verified">Email verified</string>
+    <string name="email_not_verified">Email not verified (Click to verify)</string>
+    <string name="verification_email_sent">Verification email sent</string>
+    <string name="logout">Logout</string>
 </resources>

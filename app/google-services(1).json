@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "475384934407",
+    "firebase_url": "https://banda-b1736.firebaseio.com",
+    "project_id": "banda-b1736",
+    "storage_bucket": "banda-b1736.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:475384934407:android:e0c6c13fdbe05d4749baa2",
+        "android_client_info": {
+          "package_name": "com.hilbing.bandafinal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "475384934407-87qs2ivg03ctd9fo8up9sporv6shush3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hilbing.bandafinal",
+            "certificate_hash": "ffa4cb8c29b9ed25cef2a2f064ad500b54e08f35"
+          }
+        },
+        {
+          "client_id": "475384934407-c6e085tptsfujm1qorvju5f3c4guelnn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCgo6IVWfsHxqhBFIgQm8ltdRlc5gVrKs8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "475384934407-c6e085tptsfujm1qorvju5f3c4guelnn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

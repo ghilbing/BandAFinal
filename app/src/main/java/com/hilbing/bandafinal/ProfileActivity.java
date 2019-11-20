@@ -3,6 +3,7 @@ package com.hilbing.bandafinal;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -12,6 +13,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -55,6 +59,10 @@ public class ProfileActivity extends AppCompatActivity {
     Button addMusicianBT;
     @BindView(R.id.profile_progressBar)
     ProgressBar progressBar;
+    @BindView(R.id.profile_verified_TV)
+    TextView verifiedTV;
+    @BindView(R.id.profile_toolbar)
+    Toolbar toolbar;
 
     String profileImageURL;
 
@@ -71,6 +79,7 @@ public class ProfileActivity extends AppCompatActivity {
         databaseMusicians = FirebaseDatabase.getInstance().getReference("musicians");
 
         ButterKnife.bind(this);
+        setSupportActionBar(toolbar);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -97,26 +106,38 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void loadUserData() {
 
-        FirebaseUser user = mAuth.getCurrentUser();
+        final FirebaseUser user = mAuth.getCurrentUser();
 
         if(user != null) {
-            if (user.getPhotoUrl().toString() != null) {
+            if (user.getPhotoUrl() != null) {
                 Picasso.get().load(user.getPhotoUrl().toString()).into(photoIV);
-            } else {
-                photoIV.requestFocus();
             }
             if (user.getDisplayName() != null) {
                 nameET.setText(user.getDisplayName());
+            }
+            if(user.isEmailVerified()){
+                verifiedTV.setText(getResources().getString(R.string.email_verified));
             } else {
-                nameET.requestFocus();
+                verifiedTV.setText(getResources().getString(R.string.email_not_verified));
+                verifiedTV.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Toast.makeText(getApplicationContext(), getResources().getString(R.string.verification_email_sent), Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+                });
             }
         }
     }
 
     private void saveUserInformation() {
 
-        String name = nameET.getText().toString();
-        String phone = phoneET.getText().toString();
+        final String name = nameET.getText().toString();
+        final String phone = phoneET.getText().toString();
 
         if(name.isEmpty()){
             nameET.setError(getResources().getString(R.string.enter_your_name));
@@ -135,10 +156,18 @@ public class ProfileActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful()){
-                                Toast.makeText(getApplicationContext(), getResources().getString(R.string.profile_updated), Toast.LENGTH_LONG).show();
+                                String id = databaseMusicians.push().getKey();
+                                Musician musician = new Musician(id, name, phone);
+                                databaseMusicians.child(id).setValue(musician);
+                                Toast.makeText(getApplicationContext(), getResources().getString(R.string.musician_added), Toast.LENGTH_LONG).show();
+                               // Toast.makeText(getApplicationContext(), getResources().getString(R.string.profile_updated), Toast.LENGTH_LONG).show();
                             }
                         }
                     });
+            String id = databaseMusicians.push().getKey();
+            Musician musician = new Musician(id, name, phone);
+            databaseMusicians.child(id).setValue(musician);
+            Toast.makeText(this, getResources().getString(R.string.musician_added), Toast.LENGTH_LONG).show();
         }
 
 
@@ -223,5 +252,27 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.logout:
+                FirebaseAuth.getInstance().signOut();
+                finish();
+                startActivity(new Intent(getApplicationContext(), LoginEmailPassActivity.class));
+                break;
+        }
+
+        return true;
     }
 }
