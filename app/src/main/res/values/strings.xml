@@ -39,4 +39,27 @@
     <string name="email_not_verified">Email not verified (Click to verify)</string>
     <string name="verification_email_sent">Verification email sent</string>
     <string name="logout">Logout</string>
+    <string name="add">Add</string>
+
+    <array name="instruments">
+        <item>Bass</item>
+        <item>Guitar</item>
+        <item>Drums</item>
+        <item>Ukelele</item>
+        <item>Cello</item>
+        <item>Flute</item>
+        <item>Viola</item>
+        <item>Piano</item>
+        <item>Violin</item>
+        <item>Saxofon</item>
+        <item>None</item>
+    </array>
+
+    <array name="experience">
+        <item>Basic</item>
+        <item>Medium</item>
+        <item>Advanced</item>
+        <item>None</item>
+    </array>
+
 </resources>

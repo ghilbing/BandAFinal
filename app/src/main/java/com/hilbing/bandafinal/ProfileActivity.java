@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,6 +46,7 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -182,12 +184,12 @@ public class ProfileActivity extends AppCompatActivity {
 
         FirebaseUser user = mAuth.getCurrentUser();
         imageGoogle = user.getPhotoUrl();
-        Uri uploadUri = Uri.fromFile(new File(imageGoogle.toString()));
+        Uri uploadUri = Uri.parse(String.valueOf(imageGoogle));
 
         final FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
 
         final StorageReference storageReferenceProfilePic = firebaseStorage.getReference();
-        final StorageReference imageRef = storageReferenceProfilePic.child("profileimagesGoogle/" + System.currentTimeMillis() + ".jpg");
+        final StorageReference imageRef = storageReferenceProfilePic.child("profileimagesgoogle/" + uploadUri.toString());//System.currentTimeMillis() + ".jpg");
         if(uploadUri != null){
             progressBar.setVisibility(View.VISIBLE);
             imageRef.putFile(uploadUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
