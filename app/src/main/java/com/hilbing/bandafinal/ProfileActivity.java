@@ -24,6 +24,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.auth.api.signin.internal.Storage;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -41,6 +43,7 @@ import com.hilbing.bandafinal.activities.auth.LoginEmailPassActivity;
 import com.hilbing.bandafinal.models.Musician;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.io.IOException;
 
 import butterknife.BindView;
@@ -70,6 +73,8 @@ public class ProfileActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
 
     Uri uriProfileImage;
+    Uri imageGoogle;
+    Uri image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,10 +139,85 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
+    private void uploadImageToFirebaseStorage() {
+
+        FirebaseUser user = mAuth.getCurrentUser();
+        imageGoogle = user.getPhotoUrl();
+
+        final FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+
+        final StorageReference storageReferenceProfilePic = firebaseStorage.getReference();
+        final StorageReference imageRef = storageReferenceProfilePic.child("profileimages/" + System.currentTimeMillis() + ".jpg");
+        if(uriProfileImage != null || imageGoogle != null){
+            if (uriProfileImage == null){
+                image = imageGoogle;
+            } else {
+                image = uriProfileImage;
+            }
+            progressBar.setVisibility(View.VISIBLE);
+            imageRef.putFile(image).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    progressBar.setVisibility(View.GONE);
+                    Task<Uri> firebaseUri = taskSnapshot.getStorage().getDownloadUrl();
+                    firebaseUri.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            profileImageURL = uri.toString();
+
+                        }
+                    });
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+    }
+
+    private void uploadImageGoogleToFirebaseStorage() {
+
+        FirebaseUser user = mAuth.getCurrentUser();
+        imageGoogle = user.getPhotoUrl();
+        Uri uploadUri = Uri.fromFile(new File(imageGoogle.toString()));
+
+        final FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+
+        final StorageReference storageReferenceProfilePic = firebaseStorage.getReference();
+        final StorageReference imageRef = storageReferenceProfilePic.child("profileimagesGoogle/" + System.currentTimeMillis() + ".jpg");
+        if(uploadUri != null){
+            progressBar.setVisibility(View.VISIBLE);
+            imageRef.putFile(uploadUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    progressBar.setVisibility(View.GONE);
+                    Task<Uri> firebaseUri = taskSnapshot.getStorage().getDownloadUrl();
+                    firebaseUri.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            profileImageURL = uri.toString();
+
+                        }
+                    });
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+    }
+
     private void saveUserInformation() {
 
         final String name = nameET.getText().toString();
         final String phone = phoneET.getText().toString();
+
 
         if(name.isEmpty()){
             nameET.setError(getResources().getString(R.string.enter_your_name));
@@ -146,7 +226,17 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         FirebaseUser user = mAuth.getCurrentUser();
+        String imageGoogle = String.valueOf(user.getPhotoUrl());
+        if(imageGoogle != null){
+            uploadImageGoogleToFirebaseStorage();
+        }
         if (user != null && profileImageURL != null){
+      /*      String image = null;
+            if(profileImageURL != null){
+                image = profileImageURL;
+            } else {
+                image = imageGoogle;
+            }*/
             UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder()
                     .setDisplayName(name)
                     .setPhotoUri(Uri.parse(profileImageURL))
@@ -156,9 +246,6 @@ public class ProfileActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful()){
-                                String id = databaseMusicians.push().getKey();
-                                Musician musician = new Musician(id, name, phone);
-                                databaseMusicians.child(id).setValue(musician);
                                 Toast.makeText(getApplicationContext(), getResources().getString(R.string.musician_added), Toast.LENGTH_LONG).show();
                                // Toast.makeText(getApplicationContext(), getResources().getString(R.string.profile_updated), Toast.LENGTH_LONG).show();
                             }
@@ -170,9 +257,12 @@ public class ProfileActivity extends AppCompatActivity {
             Toast.makeText(this, getResources().getString(R.string.musician_added), Toast.LENGTH_LONG).show();
         }
 
+        uploadImageToFirebaseStorage();
+
 
 
     }
+
 
     private void addMusician(){
         String name = nameET.getText().toString().trim();
@@ -224,35 +314,7 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
-    private void uploadImageToFirebaseStorage() {
 
-        final FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
-        final StorageReference storageReferenceProfilePic = firebaseStorage.getReference();
-        final StorageReference imageRef = storageReferenceProfilePic.child("profileimages/" + System.currentTimeMillis() + ".jpg");
-        if(uriProfileImage != null){
-            progressBar.setVisibility(View.VISIBLE);
-            imageRef.putFile(uriProfileImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    progressBar.setVisibility(View.GONE);
-                    Task<Uri> firebaseUri = taskSnapshot.getStorage().getDownloadUrl();
-                    firebaseUri.addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            profileImageURL = uri.toString();
-
-                        }
-                    });
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    progressBar.setVisibility(View.GONE);
-                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                }
-            });
-        }
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
