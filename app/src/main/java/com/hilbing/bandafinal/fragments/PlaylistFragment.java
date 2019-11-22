@@ -11,12 +11,16 @@ import androidx.fragment.app.Fragment;
 
 import com.hilbing.bandafinal.R;
 
+import butterknife.ButterKnife;
+
 public class PlaylistFragment extends Fragment {
 
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_playlist, container, false);
+        View view = inflater.inflate(R.layout.fragment_playlist, container, false);
+       // ButterKnife.bind(this, view);
+        return view;
     }
 }

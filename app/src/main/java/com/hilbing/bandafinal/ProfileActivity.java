@@ -264,7 +264,7 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         uploadImageToFirebaseStorage();
-        loginSharedPreferences(user.toString(), user.getDisplayName());//, user.getPhotoUrl().toString());
+        loginSharedPreferences(user.getUid(), user.getDisplayName());//, user.getPhotoUrl().toString());
         startActivity(new Intent(getApplicationContext(), MainActivity.class));
 
 

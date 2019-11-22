@@ -46,7 +46,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     private SharedPreferences sharedPref;
-    private static String PREF_STRING = "pref_value";
+    private static String PREF_STRING = "pref_values";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

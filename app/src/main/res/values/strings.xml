@@ -53,6 +53,9 @@
     <string name="navigation_drawer_open">Open Navigation Drawer</string>
     <string name="navigation_drawer_close">Close Navigation Drawer</string>
     <string name="bands">Bands</string>
+    <string name="please_select_instrument_you_play">Please, select the instrument/s you play</string>
+    <string name="select_your_experience">Select your experience</string>
+    <string name="add_instrument">Add instrument</string>
 
     <array name="instruments">
         <item>Bass</item>

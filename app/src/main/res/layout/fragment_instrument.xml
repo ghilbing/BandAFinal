@@ -8,4 +8,40 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/instruments" />
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/please_select_instrument_you_play" />
+
+    <Spinner
+        android:id="@+id/instrument_SP"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/instruments" />
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/select_your_experience" />
+
+    <Spinner
+        android:id="@+id/experience_SP"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/experience" />
+
+    <Button
+        android:id="@+id/add_instrument_BT"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/add_instrument" />
+
+    <ListView
+        android:id="@+id/instruments_experience_LV"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
 </LinearLayout>
