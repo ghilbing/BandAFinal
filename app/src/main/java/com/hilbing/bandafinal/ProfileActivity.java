@@ -8,6 +8,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -70,6 +71,9 @@ public class ProfileActivity extends AppCompatActivity {
     Toolbar toolbar;
 
     String profileImageURL;
+
+    private SharedPreferences sharedPreferences;
+    private static String PREF_STRING = "pref_values";
 
     DatabaseReference databaseMusicians;
     FirebaseAuth mAuth;
@@ -260,9 +264,23 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         uploadImageToFirebaseStorage();
+        loginSharedPreferences(user.toString(), user.getDisplayName());//, user.getPhotoUrl().toString());
+        startActivity(new Intent(getApplicationContext(), MainActivity.class));
 
 
 
+    }
+
+    public void loginSharedPreferences(String userId, String userName){//, String userPicture){
+
+        sharedPreferences = getApplicationContext().getSharedPreferences(PREF_STRING, 0);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        editor.putString("userId", userId);
+        editor.putString("userName", userName);
+       // editor.putString("userPicture", userPicture);
+
+        editor.commit();
     }
 
 
@@ -339,4 +357,6 @@ public class ProfileActivity extends AppCompatActivity {
 
         return true;
     }
+
+
 }
