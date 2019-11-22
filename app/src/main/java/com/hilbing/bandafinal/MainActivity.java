@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +27,7 @@ import com.hilbing.bandafinal.fragments.InstrumentFragment;
 import com.hilbing.bandafinal.fragments.PlaylistFragment;
 import com.hilbing.bandafinal.fragments.ProfileFragment;
 import com.hilbing.bandafinal.fragments.RehearsalFragment;
+import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -64,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
         mHeaderViewHolder.userIdTV.setText(sharedPref.getString("userId", ""));
         mHeaderViewHolder.userNameTV.setText(sharedPref.getString("userName", ""));
+        Picasso.get().load(sharedPref.getString("userPicture","")).into(mHeaderViewHolder.userImageIV);
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -139,6 +142,9 @@ public class MainActivity extends AppCompatActivity {
 
         @BindView(R.id.nav_header_id_TV)
         TextView userIdTV;
+
+        @BindView(R.id.nav_header_image_IV)
+        ImageView userImageIV;
 
         HeaderViewHolder(View view){
             ButterKnife.bind(this, view);

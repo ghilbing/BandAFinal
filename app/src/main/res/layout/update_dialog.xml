@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/old_instrument_TV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+    <Spinner
+        android:id="@+id/new_instrument_SP"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/instruments" />
+
+    <TextView
+        android:id="@+id/old_experience_TV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+    <Spinner
+        android:id="@+id/new_experience_SP"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/experience" />
+
+    <Button
+        android:id="@+id/update_BT"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/update" />
+
+</LinearLayout>

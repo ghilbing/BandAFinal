@@ -56,6 +56,9 @@
     <string name="please_select_instrument_you_play">Please, select the instrument/s you play</string>
     <string name="select_your_experience">Select your experience</string>
     <string name="add_instrument">Add instrument</string>
+    <string name="update">Update</string>
+    <string name="updating_instruments">Updating instruments</string>
+    <string name="please_upload_an_image">Please upload an image</string>
 
     <array name="instruments">
         <item>Bass</item>

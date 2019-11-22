@@ -154,14 +154,9 @@ public class ProfileActivity extends AppCompatActivity {
 
         final StorageReference storageReferenceProfilePic = firebaseStorage.getReference();
         final StorageReference imageRef = storageReferenceProfilePic.child("profileimages/" + System.currentTimeMillis() + ".jpg");
-        if(uriProfileImage != null || imageGoogle != null){
-            if (uriProfileImage == null){
-                image = imageGoogle;
-            } else {
-                image = uriProfileImage;
-            }
+        if(uriProfileImage != null){
             progressBar.setVisibility(View.VISIBLE);
-            imageRef.putFile(image).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            imageRef.putFile(uriProfileImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     progressBar.setVisibility(View.GONE);
@@ -233,19 +228,23 @@ public class ProfileActivity extends AppCompatActivity {
 
         FirebaseUser user = mAuth.getCurrentUser();
         String imageGoogle = String.valueOf(user.getPhotoUrl());
-        if(imageGoogle != null){
-            uploadImageGoogleToFirebaseStorage();
+        Uri profileUri = null;
+
+        if(profileImageURL == null) {
+            if (user.getPhotoUrl() == null) {
+                //When the user has not uploaded an image and when the profile does not contain a default photo
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.please_upload_an_image), Toast.LENGTH_LONG).show();
+                return;
+            }
+            //get the default profile photo when user has not uploaded an image
+            profileUri = user.getPhotoUrl();
+        } else {
+            //User the user uploaded image
+            profileUri = Uri.parse(profileImageURL);
         }
-        if (user != null && profileImageURL != null){
-      /*      String image = null;
-            if(profileImageURL != null){
-                image = profileImageURL;
-            } else {
-                image = imageGoogle;
-            }*/
             UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder()
                     .setDisplayName(name)
-                    .setPhotoUri(Uri.parse(profileImageURL))
+                    .setPhotoUri(profileUri)
                     .build();
             user.updateProfile(profile)
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -261,24 +260,24 @@ public class ProfileActivity extends AppCompatActivity {
             Musician musician = new Musician(id, name, phone);
             databaseMusicians.child(id).setValue(musician);
             Toast.makeText(this, getResources().getString(R.string.musician_added), Toast.LENGTH_LONG).show();
-        }
+       // }
 
-        uploadImageToFirebaseStorage();
-        loginSharedPreferences(user.getUid(), user.getDisplayName());//, user.getPhotoUrl().toString());
+       // uploadImageToFirebaseStorage();
+        loginSharedPreferences(user.getUid(), user.getDisplayName(), user.getPhotoUrl().toString());//, user.getPhotoUrl().toString());
         startActivity(new Intent(getApplicationContext(), MainActivity.class));
 
 
 
     }
 
-    public void loginSharedPreferences(String userId, String userName){//, String userPicture){
+    public void loginSharedPreferences(String userId, String userName, String userPicture){
 
         sharedPreferences = getApplicationContext().getSharedPreferences(PREF_STRING, 0);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         editor.putString("userId", userId);
         editor.putString("userName", userName);
-       // editor.putString("userPicture", userPicture);
+        editor.putString("userPicture", userPicture);
 
         editor.commit();
     }

@@ -1,15 +1,19 @@
 package com.hilbing.bandafinal.fragments;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -70,6 +74,15 @@ public class InstrumentFragment extends Fragment {
             }
         });
 
+        instrumentsExperienceLV.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                InstrumentsMusicians instrumentsMusicians = instrumentList.get(i);
+                showUpdateDialog(instrumentsMusicians.getmId(), instrumentsMusicians.getmInstrument(), instrumentsMusicians.getmExperience());
+                return false;
+            }
+        });
+
 
 
         return view;
@@ -90,6 +103,41 @@ public class InstrumentFragment extends Fragment {
         Toast.makeText(getContext(), "Instrument added", Toast.LENGTH_LONG).show();
 
     }
+
+    private void showUpdateDialog(String id, String instrument, String experience){
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
+        LayoutInflater inflater = getLayoutInflater();
+        final View dialogView = inflater.inflate(R.layout.update_dialog, null);
+        dialogBuilder.setView(dialogView);
+
+
+        final TextView oldInstrumentTV = dialogView.findViewById(R.id.old_instrument_TV);
+        final TextView oldExperienceTV = dialogView.findViewById(R.id.old_experience_TV);
+        final Spinner newInstrumentSP = dialogView.findViewById(R.id.new_instrument_SP);
+        final Spinner newExperienceSP = dialogView.findViewById(R.id.new_experience_SP);
+        final Button updateBT = dialogView.findViewById(R.id.update_BT);
+
+        updateBT.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        oldInstrumentTV.setText(instrument);
+        oldExperienceTV.setText(experience);
+
+        dialogBuilder.setTitle(getResources().getString(R.string.updating_instruments) + " " + instrument);
+        AlertDialog alertDialog = dialogBuilder.create();
+        alertDialog.show();
+
+
+
+    }
+
+   /* private boolean updateInstrument(String id, String instrument, String experience){
+
+    }*/
 
     @Override
     public void onStart() {
