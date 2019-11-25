@@ -8,4 +8,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/bands" />
+
+    <EditText
+        android:id="@+id/band_name_ET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/enter_a_name_for_your_band"
+        android:inputType="textPersonName" />
+
+    <Button
+        android:id="@+id/create_band_BT"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/create_band" />
+
+    <ListView
+        android:id="@+id/bands_LV"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
 </LinearLayout>

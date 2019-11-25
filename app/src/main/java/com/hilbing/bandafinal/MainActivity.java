@@ -10,6 +10,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -17,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.hilbing.bandafinal.activities.auth.FacebookLoginActivity;
 import com.hilbing.bandafinal.activities.auth.GoogleLoginActivity;
 import com.hilbing.bandafinal.activities.auth.LoginEmailPassActivity;
@@ -149,5 +152,27 @@ public class MainActivity extends AppCompatActivity {
         HeaderViewHolder(View view){
             ButterKnife.bind(this, view);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.logout:
+                FirebaseAuth.getInstance().signOut();
+                finish();
+                startActivity(new Intent(getApplicationContext(), LoginEmailPassActivity.class));
+                break;
+        }
+
+        return true;
     }
 }

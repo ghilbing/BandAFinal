@@ -91,7 +91,7 @@ public class LoginEmailPassActivity extends AppCompatActivity {
                             }
                             else {
                                 finish();
-                                Intent intent = new Intent(LoginEmailPassActivity.this, ProfileActivity.class);
+                                Intent intent = new Intent(LoginEmailPassActivity.this, MainActivity.class);
                                 startActivity(intent);
                             }
                         }

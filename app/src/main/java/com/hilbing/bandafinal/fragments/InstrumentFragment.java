@@ -20,6 +20,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -104,40 +106,82 @@ public class InstrumentFragment extends Fragment {
 
     }
 
-    private void showUpdateDialog(String id, String instrument, String experience){
+    private void showUpdateDialog(final String id, String instrument, String experience){
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
         LayoutInflater inflater = getLayoutInflater();
         final View dialogView = inflater.inflate(R.layout.update_dialog, null);
         dialogBuilder.setView(dialogView);
 
-
-        final TextView oldInstrumentTV = dialogView.findViewById(R.id.old_instrument_TV);
-        final TextView oldExperienceTV = dialogView.findViewById(R.id.old_experience_TV);
         final Spinner newInstrumentSP = dialogView.findViewById(R.id.new_instrument_SP);
         final Spinner newExperienceSP = dialogView.findViewById(R.id.new_experience_SP);
         final Button updateBT = dialogView.findViewById(R.id.update_BT);
+        final Button deleteBT = dialogView.findViewById(R.id.delete_BT);
+
+        newInstrumentSP.setSelection(getIndexSpinner(newInstrumentSP, instrument));
+        newExperienceSP.setSelection(getIndexSpinner(newExperienceSP, experience));
+
+
+
+        dialogBuilder.setTitle(getResources().getString(R.string.updating_instruments) + ": " + instrument);
+        final AlertDialog alertDialog = dialogBuilder.create();
+        alertDialog.show();
 
         updateBT.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String newInstrument = newInstrumentSP.getSelectedItem().toString();
+                String newExperience = newExperienceSP.getSelectedItem().toString();
+
+                updateInstrument(id, newInstrument, newExperience);
+
+                alertDialog.dismiss();
+
 
             }
         });
 
-        oldInstrumentTV.setText(instrument);
-        oldExperienceTV.setText(experience);
+        deleteBT.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteInstrument(id);
+                alertDialog.dismiss();
+            }
+        });
 
-        dialogBuilder.setTitle(getResources().getString(R.string.updating_instruments) + " " + instrument);
-        AlertDialog alertDialog = dialogBuilder.create();
-        alertDialog.show();
+    }
+
+    private void deleteInstrument(String id) {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("instruments_musicians").child(idMusician).child(id);
+        databaseReference.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Toast.makeText(getContext(), getResources().getString(R.string.instrument_deleted), Toast.LENGTH_LONG).show();
+            }
+        });
 
 
 
     }
 
-   /* private boolean updateInstrument(String id, String instrument, String experience){
+    private int getIndexSpinner(Spinner spinner, String string){
+        for (int i = 0; i < spinner.getCount() ; i++) {
+            if(spinner.getItemAtPosition(i).toString().equalsIgnoreCase(string)){
+                return i;
+            }
+        }
 
-    }*/
+        return 0;
+    }
+
+    private boolean updateInstrument(String id, String instrument, String experience){
+
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("instruments_musicians").child(idMusician).child(id);
+        InstrumentsMusicians instrumentsMusicians = new InstrumentsMusicians(id, instrument, experience);
+        databaseReference.setValue(instrumentsMusicians);
+        Toast.makeText(getContext(), getResources().getString(R.string.instrument_updated_successfully), Toast.LENGTH_LONG).show();
+        return true;
+
+    }
 
     @Override
     public void onStart() {

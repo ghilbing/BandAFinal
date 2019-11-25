@@ -16,6 +16,7 @@ import com.facebook.login.widget.LoginButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
+import com.hilbing.bandafinal.ProfileActivity;
 import com.hilbing.bandafinal.R;
 import com.squareup.picasso.Picasso;
 
@@ -64,7 +65,7 @@ public class FacebookUserActivity extends AppCompatActivity {
                     emailUser.setText(user.getEmail());
                     Picasso.get().load(user.getPhotoUrl()).into(imageUser);
                 } else {
-                    Intent intent = new Intent(FacebookUserActivity.this, FacebookLoginActivity.class);
+                    Intent intent = new Intent(FacebookUserActivity.this, ProfileActivity.class);
 
                     intent.putExtra("logout", true);
                     startActivity(intent);

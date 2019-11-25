@@ -59,6 +59,19 @@
     <string name="update">Update</string>
     <string name="updating_instruments">Updating instruments</string>
     <string name="please_upload_an_image">Please upload an image</string>
+    <string name="instrument_updated_successfully">Instrument updated successfully</string>
+    <string name="old_values">Actual values</string>
+    <string name="new_values">New Values</string>
+    <string name="updating">Updating...</string>
+    <string name="delete">Delete</string>
+    <string name="instrument_deleted">Instrument deleted</string>
+    <string name="enter_a_name_for_your_band">Enter a name for your band</string>
+    <string name="search_musician">Search musician</string>
+    <string name="create_band">Create Band</string>
+    <string name="add_musician">Add musician</string>
+    <string name="invite_musician">Invite musician</string>
+
+    <string name="spotify_client_id">8a3367eb003649048f31515144e208b5</string>
 
     <array name="instruments">
         <item>Bass</item>

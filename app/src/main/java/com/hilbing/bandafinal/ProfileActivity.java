@@ -226,7 +226,7 @@ public class ProfileActivity extends AppCompatActivity {
             return;
         }
 
-        FirebaseUser user = mAuth.getCurrentUser();
+        final FirebaseUser user = mAuth.getCurrentUser();
         String imageGoogle = String.valueOf(user.getPhotoUrl());
         Uri profileUri = null;
 
@@ -253,18 +253,22 @@ public class ProfileActivity extends AppCompatActivity {
                             if(task.isSuccessful()){
                                 Toast.makeText(getApplicationContext(), getResources().getString(R.string.musician_added), Toast.LENGTH_LONG).show();
                                // Toast.makeText(getApplicationContext(), getResources().getString(R.string.profile_updated), Toast.LENGTH_LONG).show();
+                                loginSharedPreferences(user.getUid(), user.getDisplayName(), String.valueOf(user.getPhotoUrl()));
+                                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+
+                                String id = databaseMusicians.push().getKey();
+                                Musician musician = new Musician(id, name, phone);
+                                databaseMusicians.child(id).setValue(musician);
+                                Toast.makeText(getApplicationContext(), getResources().getString(R.string.musician_added), Toast.LENGTH_LONG).show();
                             }
                         }
                     });
-            String id = databaseMusicians.push().getKey();
-            Musician musician = new Musician(id, name, phone);
-            databaseMusicians.child(id).setValue(musician);
-            Toast.makeText(this, getResources().getString(R.string.musician_added), Toast.LENGTH_LONG).show();
+
        // }
 
        // uploadImageToFirebaseStorage();
-        loginSharedPreferences(user.getUid(), user.getDisplayName(), user.getPhotoUrl().toString());//, user.getPhotoUrl().toString());
-        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+       // loginSharedPreferences(user.getUid(), user.getDisplayName(), user.getPhotoUrl().toString());//, user.getPhotoUrl().toString());
+
 
 
 
