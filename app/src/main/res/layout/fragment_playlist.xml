@@ -4,8 +4,20 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/musicianIDTV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/playlists" />
+
+    <TextView
+        android:id="@+id/songTV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TextView" />
+
+    <Button
+        android:id="@+id/addSongBT"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/add_song" />
 </LinearLayout>

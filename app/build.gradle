@@ -32,9 +32,13 @@ dependencies {
 
     //Spotify
     implementation project(':spotify-app-remote')
-    implementation "com.google.code.gson:gson:2.8.5"
+    implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.spotify.android:auth:1.1.0'
+   // implementation 'com.github.kaaes:spotify-web-api-android:0.4.1'
 
+
+    //Volley
+    implementation 'com.android.volley:volley:1.1.1'
 
     //Butterknife
     implementation 'com.jakewharton:butterknife:10.2.0'
