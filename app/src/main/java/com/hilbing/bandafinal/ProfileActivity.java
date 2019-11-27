@@ -334,6 +334,8 @@ public class ProfileActivity extends AppCompatActivity {
         if(mAuth.getCurrentUser() == null){
             finish();
             startActivity(new Intent(getApplicationContext(), LoginEmailPassActivity.class));
+        } else {
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
         }
     }
 

@@ -73,6 +73,10 @@
 
     <string name="spotify_client_id">8a3367eb003649048f31515144e208b5</string>
     <string name="add_song">Add song</string>
+    <string name="songs">Songs</string>
+    <string name="adding_musicians_to_band">Adding musicians to band</string>
+    <string name="search">Search...</string>
+    <string name="select_musician">Select musician...</string>
 
     <array name="instruments">
         <item>Bass</item>

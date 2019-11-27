@@ -2,26 +2,19 @@ package com.hilbing.bandafinal.models;
 
 public class BandsMusicians {
 
-    String mId;
+
     String mIdBand;
     String mIdMusician;
     String mMusicianRole;
+    String mSince;
 
     public BandsMusicians(){}
 
-    public BandsMusicians(String mId, String mIdBand, String mIdMusician, String mMusicianRole) {
-        this.mId = mId;
+    public BandsMusicians(String mIdBand, String mIdMusician, String mMusicianRole, String mSince) {
         this.mIdBand = mIdBand;
         this.mIdMusician = mIdMusician;
         this.mMusicianRole = mMusicianRole;
-    }
-
-    public String getmId() {
-        return mId;
-    }
-
-    public void setmId(String mId) {
-        this.mId = mId;
+        this.mSince = mSince;
     }
 
     public String getmIdBand() {
@@ -46,5 +39,13 @@ public class BandsMusicians {
 
     public void setmMusicianRole(String mMusicianRole) {
         this.mMusicianRole = mMusicianRole;
+    }
+
+    public String getmSince() {
+        return mSince;
+    }
+
+    public void setmSince(String mSince) {
+        this.mSince = mSince;
     }
 }

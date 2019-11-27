@@ -26,6 +26,17 @@
     <ListView
         android:id="@+id/bands_LV"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="104dp" />
+
+    <Button
+        android:id="@+id/add_musician_BT"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/add_musician" />
+
+    <ListView
+        android:id="@+id/musicians_added_LV"
+        android:layout_width="match_parent"
+        android:layout_height="143dp" />
 
 </LinearLayout>

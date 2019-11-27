@@ -30,6 +30,7 @@ import com.hilbing.bandafinal.fragments.InstrumentFragment;
 import com.hilbing.bandafinal.fragments.PlaylistFragment;
 import com.hilbing.bandafinal.fragments.ProfileFragment;
 import com.hilbing.bandafinal.fragments.RehearsalFragment;
+import com.hilbing.bandafinal.fragments.SongFragment;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
@@ -83,6 +84,9 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.nav_band:
                         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new BandFragment()).commit();
+                        break;
+                    case R.id.nav_song:
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new SongFragment()).commit();
                         break;
                     case R.id.nav_playlists:
                         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new PlaylistFragment()).commit();

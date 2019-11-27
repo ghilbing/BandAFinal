@@ -1,5 +1,7 @@
 package com.hilbing.bandafinal.models;
 
+import ir.mirrajabi.searchdialog.core.Searchable;
+
 public class Musician {
 
     String mId;
