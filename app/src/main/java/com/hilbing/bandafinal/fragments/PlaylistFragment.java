@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,21 +37,17 @@ import butterknife.ButterKnife;
 
 public class PlaylistFragment extends Fragment {
 
-    @BindView(R.id.playlist_bandNameTV)
-    TextView musicianIDTV;
-
-    @BindView(R.id.addSongBT)
+    @BindView(R.id.playlist_name_ET)
+    TextView nameET;
+    @BindView(R.id.playlist_add_song_BT)
     Button addSongBT;
-
-
-
 
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_playlist, container, false);
-      //  getActivity().requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getActivity().requestWindowFeature(Window.FEATURE_NO_TITLE);
         ButterKnife.bind(this, view);
 
 

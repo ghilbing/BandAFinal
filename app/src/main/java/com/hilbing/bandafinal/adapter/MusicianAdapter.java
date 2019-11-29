@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.android.gms.common.util.CollectionUtils;
 import com.hilbing.bandafinal.R;
 import com.hilbing.bandafinal.models.InstrumentsMusicians;
 import com.hilbing.bandafinal.models.Musician;
@@ -55,6 +56,16 @@ public class MusicianAdapter extends ArrayAdapter<Musician> {
         return listItem;
 
 
+    }
+
+    @Override
+    public int getCount() {
+        return CollectionUtils.isEmpty(musiciansList) ? 0 : musiciansList.size();
+    }
+
+    public void updateList(List<Musician> list){
+       musiciansList = list;
+       notifyDataSetChanged();
     }
 
 

@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,9 +40,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import ir.mirrajabi.searchdialog.SimpleSearchDialogCompat;
-import ir.mirrajabi.searchdialog.core.BaseSearchDialogCompat;
-import ir.mirrajabi.searchdialog.core.SearchResultListener;
 
 public class BandFragment extends Fragment {
 
@@ -60,6 +58,7 @@ public class BandFragment extends Fragment {
 
     List<Band> bandsList = new ArrayList<Band>();
     List<Musician> musiciansList = new ArrayList<>();
+    List<Musician> musiciansListDialog = new ArrayList<>();
 
     DatabaseReference databaseBands;
     DatabaseReference databaseMusicians;
@@ -119,12 +118,8 @@ public class BandFragment extends Fragment {
             idBand = sharedPref.getString("bandId","");
             bandName = sharedPref.getString("bandName", "");
 
-            DatabaseReference bandsMusiciansSearch = FirebaseDatabase.getInstance().getReference("bandsMusicians");
-
             final View dialogView = inflater.inflate(R.layout.add_musician_dialog, null);
             dialogBuilder.setView(dialogView);
-
-            List<Musician> musiciansListDialog = new ArrayList<>();
 
             final EditText musicianNameET = dialogView.findViewById(R.id.search_musician_ET);
             final ListView musiciansLV = dialogView.findViewById(R.id.musicians_dialog_LV);
@@ -156,7 +151,7 @@ public class BandFragment extends Fragment {
                                     Long tsLong = System.currentTimeMillis()/1000;
                                     String ts = tsLong.toString();
                                     String idMus = musicSelected.getmId();
-                                    BandsMusicians bandsMusicians = new BandsMusicians(idBand, idMus, "player", ts);
+                                    BandsMusicians bandsMusicians = new BandsMusicians(idMus, "player", ts);
                                     databaseBandsMusicians.child(idBand).child(idMus).setValue(bandsMusicians);
                                     Toast.makeText(getContext(), "Musician added clicked", Toast.LENGTH_LONG).show();
 
@@ -175,13 +170,13 @@ public class BandFragment extends Fragment {
 
                         @Override
                         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                            musicianAdapter.getFilter().filter(charSequence);
-                            musicianAdapter.notifyDataSetChanged();
+                          //  musicianAdapter.getFilter().filter(charSequence);
+                          //  musicianAdapter.notifyDataSetChanged();
                         }
 
                         @Override
                         public void afterTextChanged(Editable editable) {
-
+                            filterMusicians(editable.toString().toLowerCase());
                         }
                     });
                 }
@@ -199,6 +194,16 @@ public class BandFragment extends Fragment {
 
     }
 
+    private void filterMusicians(String query) {
+        List<Musician> temp = new ArrayList();
+        for(Musician musician:musiciansListDialog) {
+            if(musician.getmName().toLowerCase().contains(query)) {
+                temp.add(musician);
+            }
+        }
+        musicianAdapter.updateList(temp);
+    }
+
     private void addBand() {
 
         final String bandName = bandNameET.getText().toString().trim();
@@ -212,8 +217,8 @@ public class BandFragment extends Fragment {
         Long tsLong = System.currentTimeMillis()/1000;
         String ts = tsLong.toString();
 
-        BandsMusicians bandsMusicians = new BandsMusicians(idBand, idMusician, "admin",ts);
-        databaseBandsMusicians.child(idBand).child(idMusician).setValue(bandsMusicians);
+        BandsMusicians bandsMusicians = new BandsMusicians(idMusician, "admin",ts);
+        databaseBandsMusicians.child(idBand).child("ids").child(idMusician).setValue(bandsMusicians);
 
         bandSharedPreferences(idBand, bandName);
 
@@ -249,93 +254,48 @@ public class BandFragment extends Fragment {
 
         idBand = sharedPref.getString("bandId", "");
 
-        databaseBandsMusicians.child(idBand).addChildEventListener(new ChildEventListener() {
+        databaseBandsMusicians.child(idBand).addValueEventListener(new ValueEventListener() {
             @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                for (DataSnapshot bandSnapshot : dataSnapshot.getChildren()) {
-                    String id = bandSnapshot.getValue().toString();
-                    boolean isMusicianId = databaseBandsMusicians.getKey().equals("mIdMusician");
-                    if(isMusicianId) {
-                        Query query = databaseBandsMusicians.orderByChild("mIdMusician").equalTo(id);
-                        arrayIds.add(query.toString());
-                    }
-                }
-            }
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.e("Count:", "" + dataSnapshot.getChildrenCount());
 
-                @Override
-                public void onChildChanged (@NonNull DataSnapshot dataSnapshot, @Nullable String s){
-
+                for(DataSnapshot musicianSnapshot : dataSnapshot.getChildren()){
+                    BandsMusicians musician = musicianSnapshot.getValue(BandsMusicians.class);
+                    Log.e("GET IDS: ", " " + musician.getmIdMusician());
                 }
 
-                @Override
-                public void onChildRemoved (@NonNull DataSnapshot dataSnapshot){
 
-                }
 
-                @Override
-                public void onChildMoved (@NonNull DataSnapshot dataSnapshot, @Nullable String s){
 
-                }
+                for (int i = 0; i < dataSnapshot.getChildrenCount() ; i++) {
 
-                @Override
-                public void onCancelled (@NonNull DatabaseError databaseError){
-
-                }
-            });
-                    /*query.addListenerForSingleValueEvent(new ValueEventListener() {
+                    Query query = databaseMusicians.orderByChild("mId").equalTo(dataSnapshot.getKey());
+                    query.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            databaseMusicians.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    musiciansList.clear();
-                                    for (DataSnapshot musicianSnapshot : dataSnapshot.getChildren()) {
-                                        Musician musician = musicianSnapshot.getValue(Musician.class);
-                                        musiciansList.add(musician);
-                                }
 
-                                    musicianAdapter = new MusicianAdapter(getContext(), musiciansList);
-                                    musiciansAddedLV.setAdapter(musicianAdapter);
-
-
-                            }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                }
-                            });
                         }
-
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
 
-
                         }
-                    });*/
+                    });
+                    Musician musician = new Musician();
+                    String name = musician.getmName();
+                }
 
-                    for(int i =0; i< arrayIds.size(); i++ ) {
-                        databaseMusicians.child(arrayIds.get(i)).addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                musiciansList.clear();
-                                for (DataSnapshot musicianSnapshot : dataSnapshot.getChildren()) {
-                                    Musician musician = musicianSnapshot.getValue(Musician.class);
-                                    musiciansList.add(musician);
-                                }
+            }
 
-                                musicianAdapter = new MusicianAdapter(getContext(), musiciansList);
-                                musiciansAddedLV.setAdapter(musicianAdapter);
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("The read failed: " ,databaseError.getMessage());
+            }
+        });
 
-                            }
+        musicianAdapter = new MusicianAdapter(getContext(), musiciansList);
+        musiciansAddedLV.setAdapter(musicianAdapter);
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
-                    }
     }
 
 

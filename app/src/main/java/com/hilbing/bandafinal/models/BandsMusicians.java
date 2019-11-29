@@ -3,27 +3,27 @@ package com.hilbing.bandafinal.models;
 public class BandsMusicians {
 
 
-    String mIdBand;
+   // String mIdBand;
     String mIdMusician;
     String mMusicianRole;
     String mSince;
 
     public BandsMusicians(){}
 
-    public BandsMusicians(String mIdBand, String mIdMusician, String mMusicianRole, String mSince) {
-        this.mIdBand = mIdBand;
+    public BandsMusicians( String mIdMusician, String mMusicianRole, String mSince) {
+     //   this.mIdBand = mIdBand;
         this.mIdMusician = mIdMusician;
         this.mMusicianRole = mMusicianRole;
         this.mSince = mSince;
     }
 
-    public String getmIdBand() {
+    /*public String getmIdBand() {
         return mIdBand;
     }
 
     public void setmIdBand(String mIdBand) {
         this.mIdBand = mIdBand;
-    }
+    }*/
 
     public String getmIdMusician() {
         return mIdMusician;
