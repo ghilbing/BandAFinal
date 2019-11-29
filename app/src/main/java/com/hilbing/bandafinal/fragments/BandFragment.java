@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -23,6 +24,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.hilbing.bandafinal.R;
 import com.hilbing.bandafinal.adapter.BandAdapter;
@@ -69,6 +71,7 @@ public class BandFragment extends Fragment {
     String idMusician = null;
     String idBand = null;
     String bandName = null;
+    List<String> arrayIds = new ArrayList<>();
 
     BandAdapter adapter;
     MusicianAdapter musicianAdapter;
@@ -228,55 +231,9 @@ public class BandFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 bandsList.clear();
-                for(DataSnapshot bandsSnapshot :dataSnapshot.getChildren()){
+                for (DataSnapshot bandsSnapshot : dataSnapshot.getChildren()) {
                     Band band = bandsSnapshot.getValue(Band.class);
                     bandsList.add(band);
-
-                    databaseBandsMusicians.child(idBand).addChildEventListener(new ChildEventListener() {
-                        @Override
-                        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                            String id = dataSnapshot.getKey();
-                            databaseMusicians.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    musiciansList.clear();
-                                    for(DataSnapshot musicianSnapshot :dataSnapshot.getChildren()){
-                                        Musician musician = musicianSnapshot.getValue(Musician.class);
-                                        musiciansList.add(musician);
-                                    }
-
-                                    musicianAdapter = new MusicianAdapter(getContext(), musiciansList);
-                                    musiciansAddedLV.setAdapter(musicianAdapter);
-
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                        }
-
-                        @Override
-                        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-                        }
-
-                        @Override
-                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
                 }
 
                 adapter = new BandAdapter(getContext(), bandsList);
@@ -290,32 +247,98 @@ public class BandFragment extends Fragment {
             }
         });
 
+        idBand = sharedPref.getString("bandId", "");
 
-
-
-/*        databaseBandsMusicians.child(idBand).addValueEventListener(new ValueEventListener() {
+        databaseBandsMusicians.child(idBand).addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                for (DataSnapshot bandSnapshot : dataSnapshot.getChildren()) {
+                    String id = bandSnapshot.getValue().toString();
+                    boolean isMusicianId = databaseBandsMusicians.getKey().equals("mIdMusician");
+                    if(isMusicianId) {
+                        Query query = databaseBandsMusicians.orderByChild("mIdMusician").equalTo(id);
+                        arrayIds.add(query.toString());
+                    }
+                }
+            }
 
+                @Override
+                public void onChildChanged (@NonNull DataSnapshot dataSnapshot, @Nullable String s){
 
-                musiciansList.clear();
-                for(DataSnapshot musicianSnapshot :dataSnapshot.getChildren()){
-                    Musician musician = musicianSnapshot.getValue(Musician.class);
-                    musiciansList.add(musician);
                 }
 
-                musicianAdapter = new MusicianAdapter(getContext(), musiciansList);
-                musiciansAddedLV.setAdapter(musicianAdapter);
-            }
+                @Override
+                public void onChildRemoved (@NonNull DataSnapshot dataSnapshot){
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
 
-            }
-        });*/
+                @Override
+                public void onChildMoved (@NonNull DataSnapshot dataSnapshot, @Nullable String s){
+
+                }
+
+                @Override
+                public void onCancelled (@NonNull DatabaseError databaseError){
+
+                }
+            });
+                    /*query.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            databaseMusicians.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    musiciansList.clear();
+                                    for (DataSnapshot musicianSnapshot : dataSnapshot.getChildren()) {
+                                        Musician musician = musicianSnapshot.getValue(Musician.class);
+                                        musiciansList.add(musician);
+                                }
+
+                                    musicianAdapter = new MusicianAdapter(getContext(), musiciansList);
+                                    musiciansAddedLV.setAdapter(musicianAdapter);
 
 
+                            }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+                        }
+
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+
+                        }
+                    });*/
+
+                    for(int i =0; i< arrayIds.size(); i++ ) {
+                        databaseMusicians.child(arrayIds.get(i)).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                musiciansList.clear();
+                                for (DataSnapshot musicianSnapshot : dataSnapshot.getChildren()) {
+                                    Musician musician = musicianSnapshot.getValue(Musician.class);
+                                    musiciansList.add(musician);
+                                }
+
+                                musicianAdapter = new MusicianAdapter(getContext(), musiciansList);
+                                musiciansAddedLV.setAdapter(musicianAdapter);
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
     }
+
+
 
     public void bandSharedPreferences(String bandId, String bandName){
 

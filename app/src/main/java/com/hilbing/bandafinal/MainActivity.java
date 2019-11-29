@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
         mHeaderViewHolder.userIdTV.setText(sharedPref.getString("userId", ""));
         mHeaderViewHolder.userNameTV.setText(sharedPref.getString("userName", ""));
+        mHeaderViewHolder.bandIdTV.setText(sharedPref.getString("bandId",""));
         Picasso.get().load(sharedPref.getString("userPicture","")).into(mHeaderViewHolder.userImageIV);
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -129,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
         final String userName = preferences.getString("userName", "");
         final String userId = preferences.getString("userId", "");
 
+
         editor.commit();
 
     }
@@ -152,6 +154,9 @@ public class MainActivity extends AppCompatActivity {
 
         @BindView(R.id.nav_header_image_IV)
         ImageView userImageIV;
+
+        @BindView(R.id.nav_header_idBand_TV)
+        TextView bandIdTV;
 
         HeaderViewHolder(View view){
             ButterKnife.bind(this, view);

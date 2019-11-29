@@ -4,7 +4,7 @@
     package="com.hilbing.bandafinal">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -12,9 +12,14 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".ProfileActivity"></activity>
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name=".YoutubeDialogActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Dialog">
+        </activity>
+        <activity android:name=".ProfileActivity" />
         <activity android:name=".activities.auth.ForgotActivity" />
         <activity android:name=".activities.auth.SignUpActivity" />
         <activity android:name=".activities.auth.RegisterAdvancedActivity" />

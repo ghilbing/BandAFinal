@@ -4,16 +4,19 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/musicianIDTV"
+        android:id="@+id/playlist_bandNameTV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/playlists" />
 
     <TextView
-        android:id="@+id/songTV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:text="@string/select_a_song" />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="373dp" />
 
     <Button
         android:id="@+id/addSongBT"

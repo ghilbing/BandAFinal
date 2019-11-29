@@ -1,19 +1,15 @@
 package com.hilbing.bandafinal.fragments;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -29,7 +25,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.hilbing.bandafinal.R;
 import com.hilbing.bandafinal.adapter.InstrumentAdapter;
-import com.hilbing.bandafinal.models.Instruments;
 import com.hilbing.bandafinal.models.InstrumentsMusicians;
 
 import java.util.ArrayList;
@@ -109,7 +104,7 @@ public class InstrumentFragment extends Fragment {
     private void showUpdateDialog(final String id, String instrument, String experience){
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
         LayoutInflater inflater = getLayoutInflater();
-        final View dialogView = inflater.inflate(R.layout.update_dialog, null);
+        final View dialogView = inflater.inflate(R.layout.update_dialog_instrument, null);
         dialogBuilder.setView(dialogView);
 
         final Spinner newInstrumentSP = dialogView.findViewById(R.id.new_instrument_SP);
