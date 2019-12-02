@@ -92,6 +92,8 @@
     <string name="song_deleted">Song deleted</string>
     <string name="song_added_successfully">Song added succesfully</string>
     <string name="no_data_available">No data available</string>
+    <string name="updating_musicans_bands">Updating musicians from band...</string>
+    <string name="musician_updated_successfully">Musician updated successfully</string>
 
     <array name="instruments">
         <item>Bass</item>

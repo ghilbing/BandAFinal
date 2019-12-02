@@ -193,6 +193,7 @@ public class InstrumentFragment extends Fragment {
 
                 InstrumentAdapter adapter = new InstrumentAdapter(getContext(), instrumentList);
                 instrumentsExperienceLV.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
             }
 
             @Override

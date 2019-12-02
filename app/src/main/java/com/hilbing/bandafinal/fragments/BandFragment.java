@@ -14,12 +14,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -59,6 +62,7 @@ public class BandFragment extends Fragment {
     List<Band> bandsList = new ArrayList<Band>();
     List<Musician> musiciansList = new ArrayList<>();
     List<Musician> musiciansListDialog = new ArrayList<>();
+    List<BandsMusicians> bandsMusiciansList = new ArrayList<>();
 
     DatabaseReference databaseBands;
     DatabaseReference databaseMusicians;
@@ -104,9 +108,101 @@ public class BandFragment extends Fragment {
             }
         });
 
+        musiciansAddedLV.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Musician musician = musiciansList.get(i);
+                final String id = musician.getmId();
+
+                Query query = databaseBandsMusicians.orderByChild("mIdMusician").equalTo(id);
+                query.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.exists()){
+                            //BandsMusicians bandsMusicians = new BandsMusicians();
+                            showUpdateDialog(id);
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+                return false;
+
+            }
+
+        });
+
 
 
         return view;
+    }
+
+    private void showUpdateDialog(String getmIdMusician) {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
+        LayoutInflater inflater = getLayoutInflater();
+        final View dialogView = inflater.inflate(R.layout.update_dialog_band_musician, null);
+        dialogBuilder.setView(dialogView);
+
+        final EditText musicianNameET = dialogView.findViewById(R.id.newMusicianNameET);
+        final EditText musicianRoleET = dialogView.findViewById(R.id.newMusicianRoleET);
+        final EditText sinceET = dialogView.findViewById(R.id.newSinceET);
+        final Button updateBT = dialogView.findViewById(R.id.update_BT);
+        final Button deleteBT = dialogView.findViewById(R.id.delete_BT);
+
+
+        dialogBuilder.setTitle(getResources().getString(R.string.updating_musicans_bands) + ": " + idBand);
+        final AlertDialog alertDialog = dialogBuilder.create();
+        alertDialog.show();
+
+        updateBT.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String newMusicianRole = musicianRoleET.getText().toString();
+                String newSince = sinceET.getText().toString();
+
+                updateBandsMusician(getmIdMusician, newMusicianRole, newSince);
+
+                alertDialog.dismiss();
+
+
+            }
+        });
+
+        deleteBT.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteMusician(getmIdMusician);
+                alertDialog.dismiss();
+            }
+        });
+
+
+    }
+
+    private void deleteMusician(String getmIdMusician) {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("bandsMusicians").child(idBand).child(getmIdMusician);
+        databaseReference.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Toast.makeText(getContext(), getResources().getString(R.string.instrument_deleted), Toast.LENGTH_LONG).show();
+            }
+        });
+
+    }
+
+    private boolean updateBandsMusician(String getmIdMusician, String newMusicianRole, String newSince) {
+
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("bandsMusicians").child(idBand).child(getmIdMusician);
+        BandsMusicians bandsMusicians = new BandsMusicians(getmIdMusician, newMusicianRole, newSince);
+        databaseReference.setValue(bandsMusicians);
+        Toast.makeText(getContext(), getResources().getString(R.string.musician_updated_successfully), Toast.LENGTH_LONG).show();
+        return true;
+
     }
 
     private void openDialog() {
@@ -258,10 +354,15 @@ public class BandFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.e("Count:", "" + dataSnapshot.getChildrenCount());
+                bandsMusiciansList.clear();
+
 
                 for (DataSnapshot musicianSnapshot : dataSnapshot.getChildren()) {
                     BandsMusicians musician = musicianSnapshot.getValue(BandsMusicians.class);
+                    bandsMusiciansList.add(musician);
                     Log.e("GET IDS: ", " " + musician.getmIdMusician());
+
+                    musiciansList.clear();
 
                     databaseMusicians.child(musician.getmIdMusician()).addValueEventListener(new ValueEventListener() {
                         @Override
@@ -270,6 +371,7 @@ public class BandFragment extends Fragment {
                             Log.e("GET NAMES", " " + musicianAdded.getmName());
                             musiciansList.add(musicianAdded);
                         }
+
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -281,6 +383,8 @@ public class BandFragment extends Fragment {
 
                 musicianAdapter = new MusicianAdapter(getContext(), musiciansList);
                 musiciansAddedLV.setAdapter(musicianAdapter);
+                musicianAdapter.notifyDataSetChanged();
+
             }
 
             @Override
