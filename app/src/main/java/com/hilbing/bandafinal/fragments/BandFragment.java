@@ -259,21 +259,16 @@ public class BandFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.e("Count:", "" + dataSnapshot.getChildrenCount());
 
-                for(DataSnapshot musicianSnapshot : dataSnapshot.getChildren()){
+                for (DataSnapshot musicianSnapshot : dataSnapshot.getChildren()) {
                     BandsMusicians musician = musicianSnapshot.getValue(BandsMusicians.class);
                     Log.e("GET IDS: ", " " + musician.getmIdMusician());
-                }
 
-
-
-
-                for (int i = 0; i < dataSnapshot.getChildrenCount() ; i++) {
-
-                    Query query = databaseMusicians.orderByChild("mId").equalTo(dataSnapshot.getKey());
-                    query.addValueEventListener(new ValueEventListener() {
+                    databaseMusicians.child(musician.getmIdMusician()).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
+                            Musician musicianAdded = dataSnapshot.getValue(Musician.class);
+                            Log.e("GET NAMES", " " + musicianAdded.getmName());
+                            musiciansList.add(musicianAdded);
                         }
 
                         @Override
@@ -281,10 +276,11 @@ public class BandFragment extends Fragment {
 
                         }
                     });
-                    Musician musician = new Musician();
-                    String name = musician.getmName();
+
                 }
 
+                musicianAdapter = new MusicianAdapter(getContext(), musiciansList);
+                musiciansAddedLV.setAdapter(musicianAdapter);
             }
 
             @Override
@@ -293,8 +289,7 @@ public class BandFragment extends Fragment {
             }
         });
 
-        musicianAdapter = new MusicianAdapter(getContext(), musiciansList);
-        musiciansAddedLV.setAdapter(musicianAdapter);
+
 
     }
 
