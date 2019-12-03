@@ -128,6 +128,9 @@ public class ProfileActivity extends AppCompatActivity {
             if (user.getDisplayName() != null) {
                 nameET.setText(user.getDisplayName());
             }
+            if(user.getPhoneNumber() != null){
+                phoneET.setText(user.getPhoneNumber());
+            }
             if(user.getEmail() != null) {
                 emailET.setText(user.getEmail());
             }
@@ -184,40 +187,6 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
-    /*private void uploadImageGoogleToFirebaseStorage() {
-
-        FirebaseUser user = mAuth.getCurrentUser();
-        imageGoogle = user.getPhotoUrl();
-        Uri uploadUri = Uri.parse(String.valueOf(imageGoogle));
-
-        final FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
-
-        final StorageReference storageReferenceProfilePic = firebaseStorage.getReference();
-        final StorageReference imageRef = storageReferenceProfilePic.child("profileimagesgoogle/" + uploadUri.toString());//System.currentTimeMillis() + ".jpg");
-        if(uploadUri != null){
-            progressBar.setVisibility(View.VISIBLE);
-            imageRef.putFile(uploadUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    progressBar.setVisibility(View.GONE);
-                    Task<Uri> firebaseUri = taskSnapshot.getStorage().getDownloadUrl();
-                    firebaseUri.addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            profileImageURL = uri.toString();
-
-                        }
-                    });
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    progressBar.setVisibility(View.GONE);
-                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                }
-            });
-        }
-    }*/
 
     private void saveUserInformation() {
 

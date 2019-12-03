@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
@@ -60,6 +61,9 @@ public class SignUpActivity extends AppCompatActivity {
     SignInButton googleBT;
     @BindView(R.id.progress_bar)
     ProgressBar progressBar;
+
+    private SharedPreferences sharedPreferences;
+    private static String PREF_STRING = "pref_values";
 
 
     FirebaseAuth mAuth;

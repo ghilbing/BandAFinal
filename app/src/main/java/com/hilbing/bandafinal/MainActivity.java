@@ -10,6 +10,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.PersistableBundle;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -49,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
 
     HeaderViewHolder mHeaderViewHolder;
 
+    ProfileFragment profileFragment;
+
 
 
     private SharedPreferences sharedPref;
@@ -71,7 +75,10 @@ public class MainActivity extends AppCompatActivity {
         mHeaderViewHolder.userIdTV.setText(sharedPref.getString("userId", ""));
         mHeaderViewHolder.userNameTV.setText(sharedPref.getString("userName", ""));
         mHeaderViewHolder.bandIdTV.setText(sharedPref.getString("bandId",""));
-//        Picasso.get().load(sharedPref.getString("userPicture","")).into(mHeaderViewHolder.userImageIV);
+        String userPicture = sharedPref.getString("userPicture", "");
+        if(!TextUtils.isEmpty(userPicture)) {
+            Picasso.get().load(sharedPref.getString("userPicture", "")).into(mHeaderViewHolder.userImageIV);
+        }
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -115,12 +122,22 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        if(savedInstanceState == null) {
+   /*     if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProfileFragment()).commit();
             navigationView.setCheckedItem(R.id.nav_profile);
         }
+        if(savedInstanceState != null){
+            profileFragment = (ProfileFragment) getSupportFragmentManager().getFragment(savedInstanceState, "ProfileFragment");
+        }*/
 
 
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState, @NonNull PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+       // getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProfileFragment()).commit();
+        getSupportFragmentManager().putFragment(outState, "ProfileFragment", profileFragment);
     }
 
     public void getDataFromPreferences(){

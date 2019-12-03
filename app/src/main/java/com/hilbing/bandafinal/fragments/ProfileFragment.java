@@ -68,8 +68,7 @@ public class ProfileFragment extends Fragment {
     ProgressBar progressBar;
     @BindView(R.id.profile_verified_TV)
     TextView verifiedTV;
-    @BindView(R.id.profile_toolbar)
-    Toolbar toolbar;
+
 
     String profileImageURL;
 
@@ -89,6 +88,7 @@ public class ProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         ButterKnife.bind(this, view);
         mAuth = FirebaseAuth.getInstance();
+        databaseMusicians = FirebaseDatabase.getInstance().getReference("musicians");
 
         loadUserData();
 
@@ -109,38 +109,6 @@ public class ProfileFragment extends Fragment {
         return view;
     }
 
- /*   @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
-
-        databaseMusicians = FirebaseDatabase.getInstance().getReference("musicians");
-
-        ButterKnife.bind(this);
-        setSupportActionBar(toolbar);
-
-        mAuth = FirebaseAuth.getInstance();
-
-        loadUserData();
-
-
-
-        photoIV.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                imageChooser();
-            }
-        });
-
-        addMusicianBT.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                saveUserInformation();
-                //loadUserData();
-            }
-        });
-
-    }*/
 
     private void loadUserData() {
 
@@ -156,6 +124,10 @@ public class ProfileFragment extends Fragment {
             if(user.getEmail() != null) {
                 emailET.setText(user.getEmail());
             }
+            if(user.getPhoneNumber() != null){
+                phoneET.setText(user.getPhoneNumber());
+            }
+
             if(user.isEmailVerified()){
                 verifiedTV.setText(getResources().getString(R.string.email_verified));
             } else {
@@ -209,40 +181,6 @@ public class ProfileFragment extends Fragment {
         }
     }
 
-    /*private void uploadImageGoogleToFirebaseStorage() {
-
-        FirebaseUser user = mAuth.getCurrentUser();
-        imageGoogle = user.getPhotoUrl();
-        Uri uploadUri = Uri.parse(String.valueOf(imageGoogle));
-
-        final FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
-
-        final StorageReference storageReferenceProfilePic = firebaseStorage.getReference();
-        final StorageReference imageRef = storageReferenceProfilePic.child("profileimagesgoogle/" + uploadUri.toString());//System.currentTimeMillis() + ".jpg");
-        if(uploadUri != null){
-            progressBar.setVisibility(View.VISIBLE);
-            imageRef.putFile(uploadUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    progressBar.setVisibility(View.GONE);
-                    Task<Uri> firebaseUri = taskSnapshot.getStorage().getDownloadUrl();
-                    firebaseUri.addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            profileImageURL = uri.toString();
-
-                        }
-                    });
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    progressBar.setVisibility(View.GONE);
-                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                }
-            });
-        }
-    }*/
 
     private void saveUserInformation() {
 
@@ -298,7 +236,7 @@ public class ProfileFragment extends Fragment {
                             // Toast.makeText(getApplicationContext(), getResources().getString(R.string.profile_updated), Toast.LENGTH_LONG).show();
                             String photo = String.valueOf(user.getPhotoUrl());
                             loginSharedPreferences(user.getUid(), user.getDisplayName(), email, phone, photo);
-                            startActivity(new Intent(getActivity(), MainActivity.class));
+                         //   startActivity(new Intent(getActivity(), MainActivity.class));
 
                             String id = databaseMusicians.push().getKey();
                             Musician musician = new Musician(id, name, phone, email, photo);
@@ -324,23 +262,6 @@ public class ProfileFragment extends Fragment {
 
         editor.commit();
     }
-
-
-/*    private void addMusician(){
-        String name = nameET.getText().toString().trim();
-        String phone = phoneET.getText().toString().trim();
-
-        if(!TextUtils.isEmpty(name)){
-            String id = databaseMusicians.push().getKey();
-            Musician musician = new Musician(id, name, phone);
-            databaseMusicians.child(id).setValue(musician);
-            Toast.makeText(this, getResources().getString(R.string.musician_added), Toast.LENGTH_LONG).show();
-
-
-        } else {
-            Toast.makeText(this, getResources().getString(R.string.enter_your_name), Toast.LENGTH_LONG).show();
-        }
-    }*/
 
     private void imageChooser(){
         Intent intent = new Intent();
@@ -375,7 +296,7 @@ public class ProfileFragment extends Fragment {
             getActivity().finish();
             startActivity(new Intent(getActivity(), LoginEmailPassActivity.class));
         } else {
-            startActivity(new Intent(getActivity(), MainActivity.class));
+          //  startActivity(new Intent(getActivity(), MainActivity.class));
         }
     }
 
