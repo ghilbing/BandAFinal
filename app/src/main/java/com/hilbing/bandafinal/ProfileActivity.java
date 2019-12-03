@@ -61,6 +61,8 @@ public class ProfileActivity extends AppCompatActivity {
     EditText nameET;
     @BindView(R.id.profile_phone_ET)
     EditText phoneET;
+    @BindView(R.id.profile_email_ET)
+    EditText emailET;
     @BindView(R.id.profile_addMusician_BT)
     Button addMusicianBT;
     @BindView(R.id.profile_progressBar)
@@ -126,6 +128,9 @@ public class ProfileActivity extends AppCompatActivity {
             if (user.getDisplayName() != null) {
                 nameET.setText(user.getDisplayName());
             }
+            if(user.getEmail() != null) {
+                emailET.setText(user.getEmail());
+            }
             if(user.isEmailVerified()){
                 verifiedTV.setText(getResources().getString(R.string.email_verified));
             } else {
@@ -179,7 +184,7 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
-    private void uploadImageGoogleToFirebaseStorage() {
+    /*private void uploadImageGoogleToFirebaseStorage() {
 
         FirebaseUser user = mAuth.getCurrentUser();
         imageGoogle = user.getPhotoUrl();
@@ -212,17 +217,30 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             });
         }
-    }
+    }*/
 
     private void saveUserInformation() {
 
         final String name = nameET.getText().toString();
         final String phone = phoneET.getText().toString();
+        final String email = emailET.getText().toString();
 
 
         if(name.isEmpty()){
             nameET.setError(getResources().getString(R.string.enter_your_name));
             nameET.requestFocus();
+            return;
+        }
+
+        if(phone.isEmpty()){
+            phoneET.setError(getResources().getString(R.string.enter_your_phone));
+            phoneET.requestFocus();
+            return;
+        }
+
+        if(email.isEmpty()){
+            emailET.setError(getResources().getString(R.string.enter_your_email));
+            emailET.requestFocus();
             return;
         }
 
@@ -253,41 +271,37 @@ public class ProfileActivity extends AppCompatActivity {
                             if(task.isSuccessful()){
                                 Toast.makeText(getApplicationContext(), getResources().getString(R.string.musician_added), Toast.LENGTH_LONG).show();
                                // Toast.makeText(getApplicationContext(), getResources().getString(R.string.profile_updated), Toast.LENGTH_LONG).show();
-                                loginSharedPreferences(user.getUid(), user.getDisplayName(), String.valueOf(user.getPhotoUrl()));
+                                String photo = String.valueOf(user.getPhotoUrl());
+                                loginSharedPreferences(user.getUid(), user.getDisplayName(), email, phone, photo);
                                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
 
                                 String id = databaseMusicians.push().getKey();
-                                Musician musician = new Musician(id, name, phone);
+                                Musician musician = new Musician(id, name, phone, email, photo);
                                 databaseMusicians.child(id).setValue(musician);
                                 Toast.makeText(getApplicationContext(), getResources().getString(R.string.musician_added), Toast.LENGTH_LONG).show();
                             }
                         }
                     });
 
-       // }
-
-       // uploadImageToFirebaseStorage();
-       // loginSharedPreferences(user.getUid(), user.getDisplayName(), user.getPhotoUrl().toString());//, user.getPhotoUrl().toString());
-
-
-
 
     }
 
-    public void loginSharedPreferences(String userId, String userName, String userPicture){
+    public void loginSharedPreferences(String userId, String userName, String userEmail, String userPhone, String userPicture){
 
         sharedPreferences = getApplicationContext().getSharedPreferences(PREF_STRING, 0);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         editor.putString("userId", userId);
         editor.putString("userName", userName);
+        editor.putString("userEmail", userEmail);
+        editor.putString("userPhone", userPhone);
         editor.putString("userPicture", userPicture);
 
         editor.commit();
     }
 
 
-    private void addMusician(){
+/*    private void addMusician(){
         String name = nameET.getText().toString().trim();
         String phone = phoneET.getText().toString().trim();
 
@@ -301,7 +315,7 @@ public class ProfileActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, getResources().getString(R.string.enter_your_name), Toast.LENGTH_LONG).show();
         }
-    }
+    }*/
 
     private void imageChooser(){
         Intent intent = new Intent();

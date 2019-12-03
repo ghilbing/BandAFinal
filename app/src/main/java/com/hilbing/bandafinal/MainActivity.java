@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         mHeaderViewHolder.userIdTV.setText(sharedPref.getString("userId", ""));
         mHeaderViewHolder.userNameTV.setText(sharedPref.getString("userName", ""));
         mHeaderViewHolder.bandIdTV.setText(sharedPref.getString("bandId",""));
-        Picasso.get().load(sharedPref.getString("userPicture","")).into(mHeaderViewHolder.userImageIV);
+//        Picasso.get().load(sharedPref.getString("userPicture","")).into(mHeaderViewHolder.userImageIV);
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override

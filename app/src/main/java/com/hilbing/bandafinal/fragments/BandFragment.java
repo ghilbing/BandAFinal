@@ -367,9 +367,11 @@ public class BandFragment extends Fragment {
                     databaseMusicians.child(musician.getmIdMusician()).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            Musician musicianAdded = dataSnapshot.getValue(Musician.class);
-                            Log.e("GET NAMES", " " + musicianAdded.getmName());
-                            musiciansList.add(musicianAdded);
+                            if(dataSnapshot.exists()) {
+                                Musician musicianAdded = dataSnapshot.getValue(Musician.class);
+                                Log.e("GET NAMES", " " + musicianAdded.getmName());
+                                musiciansList.add(musicianAdded);
+                            }
                         }
 
 
